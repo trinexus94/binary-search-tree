@@ -1,20 +1,220 @@
-// binary-search-tree.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
+#include<cstdlib>
 #include <iostream>
 
+struct node
+{
+	int data;
+	node* left;
+	node* right;
+
+};
+
+node* root;
+//set current to be equal to root node
+node* current = root;
+
+//add nodes
+void addNodes(int data);
+
+//delete nodes
+void deleteNodes(int data);
+
+//function to add node
 int main()
 {
-    std::cout << "Hello World!\n";
+    //intial array
+	int arr[] = { 50,76,21,4,32,64,15,52,14,100,83,2,3,70,87,80 };
+	int arrSize = std::size(arr);
+
+	for (int i = 0; i < arrSize; i++)
+	{
+		addNodes(arr[i]);
+	}
+
+	deleteNodes(78);
+	
 }
 
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
+void addNodes(int data)
+{
+	node* temp = new node;
+	temp->data = data;
+	temp->left = NULL;
+	temp->right = NULL;
 
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
+
+
+	//check if root node is empty
+	if (root == NULL)
+	{
+		root = temp;
+		std::cout << data << " is the root" << std::endl;
+	}
+	else
+	{
+
+		//check if current node's value is > or <
+		if (data < current->data)
+		{
+			if (current->left != NULL)
+			{
+				current = current->left;
+				if (data < current->data)
+				{
+					addNodes(data);
+
+				}
+				else
+				{
+					if (data > current->data)
+					{
+						//check if current->right is null
+						if (current->right != NULL)
+						{
+							current = current->right;
+							addNodes(data);
+						}
+						else
+						{
+							current->right = temp;
+							std::cout << data << " added right of node: " << current->data << std::endl;
+						}
+						
+					}
+					else
+					{
+						std::cout << "This value is already inserted" << std::endl;
+					}
+				}
+			}
+			else
+			{
+				current->left = temp;
+				std::cout << data << " added to the left of node: " << current->data << std::endl;
+			}
+			
+			
+		}
+		else
+		{
+			//check if right node is null
+			if (current->right != NULL)
+			{
+				current = current->right;
+				addNodes(data);
+			}
+			else
+			{
+				current->right = temp;
+				std::cout << data << " added to the right of node: " << current->data << std::endl;
+			}
+
+		}
+
+
+	}
+	
+	current = root;
+}
+
+void deleteNodes(int data) {
+	node* temp;
+	node* prev = current;
+
+	//check if root node is data to delete
+	if (root->data == data)
+	{
+		//find least value in right side and make it root
+		current = root->right;
+		//go left of each node
+		while (current->left != NULL)
+		{
+			current = current->left;
+		}
+
+		root->data = current->data;
+		std::cout << "\nNew root data is: " << root->data << std::endl;
+		delete current;
+	}
+	else
+	{
+
+		if (data < current->data)
+		{
+			if (current->left != NULL)
+			{
+
+				current = current->left;
+				deleteNodes(data);
+			}
+			else
+			{
+				std::cout << "This value is not available in the tree\n";
+			}
+
+		}
+		else if(data > current->data)
+		{
+			if (current->right != NULL)
+			{
+		
+				current = current->right;
+				deleteNodes(data);
+			}
+			else
+			{
+				std::cout << "This value is not available in the tree\n";
+			}
+			
+		}
+		else
+		{
+			//condition where current data is equal to data to delete
+			
+			//check if node has right side
+			if (current->right != NULL)
+			{
+				//traverse rest of its children to find least value from its right side
+				temp = current->right;
+				while (temp->left != NULL)
+				{
+					temp = temp->left;
+				}
+				std::cout << "Deleting node: " << current->data << " and replacing with: " << temp->data << std::endl;
+				//replace current value with temp
+				current->data = temp->data;
+				
+				
+			}
+			else
+			{
+				if (current->left != NULL)
+				{
+					//has single child so child replaces node in tree
+					temp = current->left;
+					if (prev->left->data == current->data) {
+						prev->left = temp;
+						std::cout << "Deleting node: " << current->data << " and replacing with: " << temp->data << std::endl;
+					}
+					else
+					{
+						prev->right = temp;
+						std::cout << "Deleting node: " << current->data << " and replacing with: " << temp->data << std::endl;
+					}
+				}
+				else
+				{
+					std::cout << "Deleting node: " << current->data << " with no replacement " << std::endl;
+				}
+
+				
+				
+			}
+
+		}
+	}
+	
+	current = root;
+}
+
+
