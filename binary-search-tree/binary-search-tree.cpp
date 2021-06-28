@@ -10,14 +10,18 @@ struct node
 };
 
 node* root;
+
 //set current to be equal to root node
-node* current = root;
+node* current;
 
 //add nodes
 void addNodes(int data);
 
 //delete nodes
 void deleteNodes(int data);
+
+//print bst in-order
+void inorderTraversal(node* ptr);
 
 //function to add node
 int main()
@@ -31,7 +35,11 @@ int main()
 		addNodes(arr[i]);
 	}
 
-	deleteNodes(78);
+	//deleteNodes(78);
+
+	current = root;
+	std::cout << "\n\n.......Printing in order......\n";
+	inorderTraversal(root);
 	
 }
 
@@ -215,6 +223,41 @@ void deleteNodes(int data) {
 	}
 	
 	current = root;
+} 
+
+void inorderTraversal(node* ptr) {
+	//node* parent;
+	//node* covered;
+	//current = root;
+
+	if (ptr != NULL)
+	{
+		
+		if (ptr->left != NULL)
+		{
+			inorderTraversal(ptr->left);
+		}
+
+		//parent = current;
+
+		//arrived at final most left node
+		std::cout << ptr->data << " ";
+
+		if (ptr->right != NULL)
+		{
+			
+			inorderTraversal(ptr->right);
+		}
+
+	}
+
+
+	else
+	{
+
+		std::cout << "No tree to traverse\n";
+	}
+
 }
 
 
